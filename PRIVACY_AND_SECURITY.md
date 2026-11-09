@@ -1,9 +1,11 @@
 # Privacy, Data Residency & Security Architecture
 
+> Security documentation (data handling, encryption, vulnerability management and certifications) is in [SECURITY.md](./SECURITY.md).
+
 **App Title:** PII, Secret & AI Redaction Guard for Jira  
 **App Key:** `com.evidencepair.jira.safe.redact`  
 **Vendor:** EvidencePair LLC  
-**Security Contact:** `support@titlecovenant.com`
+**Security Contact:** `security@evidencepair.com`
 
 ---
 
@@ -49,4 +51,4 @@ Every write operation passes through `assertZeroRawSecretsInAuditPayload(payload
 
 ## 5. Vulnerability Disclosure & Security Contact
 
-To report a security issue or request compliance documentation (SOC 2 / ISO 27001 / HIPAA / PCI-DSS / CAIQ), email `support@titlecovenant.com`. Security inquiries receive an initial response within 24 hours.
+To report a security issue, email `security@evidencepair.com`. We acknowledge every report within one business day. EvidencePair holds no security certifications; see [SECURITY.md](./SECURITY.md).
