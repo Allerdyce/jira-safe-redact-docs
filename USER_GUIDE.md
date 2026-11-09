@@ -3,7 +3,7 @@
 ## 1. Installation & Quick Start
 
 1. Install **PII, Secret & AI Redaction Guard for Jira** from the Atlassian Marketplace into your Jira Cloud site.
-2. Open any Jira project (e.g., **IT Helpdesk**) and select **PII & Secret Redaction Radar** in the left project sidebar (`jira:projectPage` — `jira-safe-redact-admin`).
+2. Open any Jira project (e.g., **IT Helpdesk**) and select **PII, Secret & AI Redaction Guard for Jira** in the left project sidebar (`jira:projectPage` — `jira-safe-redact-admin`).
 3. Review and toggle the active Space Redaction Policy Packs:
    - **Cloud Secrets & API Keys**: `AWS_KEY` (`AKIA...`, `ASIA...`), `BEARER_TOKEN` (`sk_live_...`, `ghp_...`, `xoxb-...`, `Bearer ...`).
    - **HIPAA**: `SSN` (`\b\d{3}-\d{2}-\d{4}\b`).
@@ -15,7 +15,7 @@
 
 ## 2. Dry-Run Scanning & 1-Click In-Place ADF Redaction on an Issue
 
-1. Open any Jira issue and click the **PII & Secret Sanitizer (Rovo AI Guard)** issue panel (`jira:issuePanel` — `jira-safe-redact-panel`).
+1. Open any Jira issue and click the **PII, Secret & AI Redaction Guard for Jira** issue panel (`jira:issuePanel` — `jira-safe-redact-panel`).
 2. The scanner recursively traverses the issue's `summary`, `description` (Atlassian Document Format AST), and `comment` bodies (`body` ADF AST).
 3. Review the **Zero-Leak Dry-Run Masked Diff Preview** table:
    - Displays each finding's pattern type (`AWS_KEY`, `BEARER_TOKEN`, `SSN`, `CREDIT_CARD`, `EMAIL_PII`), policy pack, ADF AST field path, and partially masked preview (`sk_live_...9f2a -> [REDACTED_API_KEY]`).
@@ -28,12 +28,12 @@
 
 ## 3. Space-Wide JQL Batch Scanner & 1-Click Compliance CSV Export
 
-1. Open **PII & Secret Redaction Radar** from the project sidebar.
+1. Open **PII, Secret & AI Redaction Guard for Jira** from the project sidebar.
 2. Click **Run Space-Wide JQL Batch Scanner** to inspect issues across the space.
 3. Click **1-Click Export Compliance Audit CSV** to generate an RFC-4180 compliant CSV containing issue keys, summaries, sanitization status, redacted counts, detected pattern types, scrubbed field paths, `sanitized-for-ai` label status, operator Account IDs, UTC timestamps, and 64-character SHA-256 certificates.
 
 ---
 
-## 4. Support & SLA
+## 4. Support
 
-For technical support, feature requests, or security inquiries, contact **EvidencePair LLC** at `support@titlecovenant.com`.
+For technical support or feature requests, contact **EvidencePair LLC** at <https://evidencepair.com/support/> (`support@evidencepair.com`). We reply within one business day. Report security issues to `security@evidencepair.com`.

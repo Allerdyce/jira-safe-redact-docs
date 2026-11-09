@@ -11,7 +11,7 @@
 
 Prevent accidentally pasted API keys, cloud credentials, Social Security Numbers, credit card PANs, and personal email addresses from lingering in Jira tickets or leaking into AI grounding contexts. **PII, Secret & AI Redaction Guard for Jira** combines an Atlassian Document Format (ADF) AST recursive scrubber, a zero-leak dry-run diff preview, and deterministic Web Crypto SHA-256 sanitization certificates into a 100% *Runs on Atlassian* security guard.
 
-### Why Security & Compliance Teams Choose PII, Secret & AI Redaction Guard
+### Why Security & Compliance Teams Choose PII, Secret & AI Redaction Guard for Jira
 
 1. **ADF-Safe Issue & Comment Scrubber + Masked Dry-Run Preview (`jira-safe-redact-panel`)**
    - Recursively walks Jira ADF JSON AST nodes across issue `description`, `summary`, and `comment` bodies.
@@ -32,7 +32,7 @@ Prevent accidentally pasted API keys, cloud credentials, Social Security Numbers
 Recursively traverse Jira Atlassian Document Format (ADF) descriptions, summaries, and comments to preview masked matches (`sk_live_...9f2a -> [REDACTED_API_KEY]`) and scrub exposed secrets and PII in-place without breaking rich-text formatting.
 
 ### Highlight 2: Zero-Leak Web Crypto SHA-256 Certificate & Rovo AI Safe Label
-Record a tamper-evident SHA-256 sanitization certificate (`accountId|issueKey|redactedCount|patternTypes|timestamp`) in Jira Issue Property `safeRedactAudit` (`<32 KB`, zero raw PII stored) and automatically apply the `sanitized-for-ai` label.
+Record a SHA-256 sanitization certificate (`accountId|issueKey|redactedCount|patternTypes|timestamp`) in Jira Issue Property `safeRedactAudit` (`<32 KB`, zero raw PII stored) and automatically apply the `sanitized-for-ai` label.
 
 ### Highlight 3: Space Policy Packs (HIPAA, PCI-DSS, Cloud Secrets, GDPR) & CSV Export
 Configure space-level detection packs in `safeRedactPolicy`, execute space-wide JQL batch scans in `jira:projectPage`, and export your compliance audit ledger to RFC-4180 CSV in 1 click.

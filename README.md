@@ -4,7 +4,8 @@
 **App Key:** `com.evidencepair.jira.safe.redact`  
 **App ID:** `ari:cloud:ecosystem::app/719ce0d1-4562-4b7f-9856-1101074101a3`  
 **Developer / Vendor:** EvidencePair LLC  
-**Support & Security Contact:** `support@titlecovenant.com`  
+**Support:** <https://evidencepair.com/support/> (`support@evidencepair.com`)  
+**Security Contact:** `security@evidencepair.com`  
 **Runtime:** Atlassian Forge `nodejs24.x` (100% *Runs on Atlassian* — Zero External Egress, Zero Forge SQL/KVS)
 
 ---
@@ -34,6 +35,8 @@
 ## Documentation Index
 
 - [User & Administrator Guide](./USER_GUIDE.md)
+- [Privacy Policy](./PRIVACY_POLICY.md)
+- [Security](./SECURITY.md)
 - [Privacy, Data Residency & Security Architecture](./PRIVACY_AND_SECURITY.md)
 - [End-User License Agreement (EULA)](./EULA.md)
 - [Atlassian Marketplace Listing Copy](./LISTING_COPY.md)

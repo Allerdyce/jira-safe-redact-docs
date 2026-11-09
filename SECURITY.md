@@ -17,7 +17,7 @@ How the Atlassian Marketplace app **PII, Secret & AI Redaction Guard for Jira**,
   - `read:jira-work`: read issues, their comments, the project's policy, the certificate and the recent-issues list.
   - `write:jira-work`: write masked text back to issues and comments, and save the certificate.
   - `read:app-data:jira`, `write:app-data:jira`: declared but not used by this version.
-- **What the checksum is.** Each certificate carries a SHA-256 checksum of its contents. It shows whether the stored certificate still matches what was recorded. It is not a digital signature: someone with permission to edit the issue property could change the certificate and recompute the checksum.
+- **What the checksum is.** Each certificate carries a SHA-256 checksum of the account ID, issue key, total count, kinds of data found and time (not the field paths). It shows whether those values still match what was recorded. It is not a digital signature: someone with permission to edit the issue property could change the certificate and recompute the checksum.
 
 ## Encryption
 
