@@ -6,7 +6,8 @@
 **Developer / Vendor:** EvidencePair LLC  
 **Support:** <https://evidencepair.com/support/> (`support@evidencepair.com`)  
 **Security Contact:** `security@evidencepair.com`  
-**Runtime:** Atlassian Forge `nodejs24.x` (100% *Runs on Atlassian* — Zero External Egress, Zero Forge SQL/KVS)
+**Runtime:** Atlassian Forge `nodejs24.x` (100% *Runs on Atlassian* — Zero External Egress, Zero Forge SQL/KVS)  
+**Scopes:** `read:jira-work`, `write:jira-work`, `manage:jira-project` (from version 4.0.0)
 
 ---
 
@@ -18,17 +19,18 @@
 
 1. **Space Redaction Policy Engine (`jira:projectPage` — `jira-safe-redact-admin`)**
    - Enable and customize compliance regex policy packs: **Cloud Secrets & API Keys** (`AWS_KEY`, `BEARER_TOKEN`), **HIPAA** (`SSN`), **PCI-DSS** (`CREDIT_CARD`), and **GDPR PII** (`EMAIL_PII`).
-   - Stored in native Jira Project Property `safeRedactPolicy` (`<32 KB` enforced).
+   - Stored in native Jira Project Property `safeRedactPolicy` (`<32 KB` enforced). Saving needs the Administer Projects permission; the app declares `manage:jira-project` for this one call.
 
 2. **ADF-Safe Issue & Comment Scrubber + Zero-Leak Dry-Run Preview (`jira:issuePanel` — `jira-safe-redact-panel`)**
-   - Recursively walks Jira ADF AST nodes (`paragraph`, `text`, `codeBlock`, `bulletList`, `table`, `panel`, inline `marks`) in issue `description`, `summary`, and `comment` bodies.
+   - Recursively walks Jira ADF AST nodes (`paragraph`, `text`, `codeBlock`, `bulletList`, `table`, `panel`, inline `marks`) in issue `description`, `summary`, and every `comment` body.
    - Displays a masked dry-run preview (`sk_live_...9f2a -> [REDACTED_API_KEY]`, `AKIA...MPLE -> [REDACTED_AWS_KEY]`, `***-**-6789 -> [REDACTED_SSN]`) without exposing full raw tokens.
    - Executes 1-click in-place ADF sanitization without breaking rich-text formatting.
 
 3. **Zero-Leak SHA-256 Sanitization Certificate & Rovo AI Safe Labeling (`safeRedactAudit`)**
    - **Critical Zero-Leak Rule**: Never stores raw unredacted PII or secrets inside Jira Entity Properties or logs.
    - Stores only the pattern type, match count, field path, and deterministic SHA-256 redaction certificate (`accountId|issueKey|redactedCount|patternTypes|timestamp`) inside Jira Issue Property `safeRedactAudit` (`<32 KB`).
-   - Applies the `sanitized-for-ai` label and provides a space-wide JQL batch scanner with 1-click compliance CSV export.
+   - Applies the `sanitized-for-ai` label when the project's policy says to, and provides a space-wide JQL batch scanner with 1-click compliance CSV export.
+   - Checks Jira's answer to every read and write: a refused change stops the run, writes no certificate and is shown on the panel. A run that finds nothing writes nothing.
 
 ---
 

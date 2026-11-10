@@ -28,10 +28,10 @@ This application does **not** use external databases, Forge SQL, or Forge KVS. T
 
 | Property Key | REST v3 Endpoint | Purpose | Size Guard |
 | :--- | :--- | :--- | :--- |
-| `safeRedactPolicy` | `/rest/api/3/project/{projectId}/properties/safeRedactPolicy` | Project redaction policy: enabled policy packs and label settings. The app reads it. In this version saving it fails with an error before anything is sent to Jira, so the app does not write it. | Not written |
+| `safeRedactPolicy` | `/rest/api/3/project/{projectId}/properties/safeRedactPolicy` | Project redaction policy: enabled policy packs and label settings. Settings only, no personal data. Written when a project admin saves it, which needs the Administer Projects permission. | `<32 KB` (`32,768` bytes UTF-8) |
 | `safeRedactAudit` | `/rest/api/3/issue/{issueKey}/properties/safeRedactAudit` | Zero-leak SHA-256 sanitization certificate: the account ID of the person who ran the redaction, the time, pattern counts, and field paths | `<32 KB` (`32,768` bytes UTF-8) |
 
-The certificate passes through `assertZeroRawSecretsInAuditPayload(payload)` and `assertPropertyPayloadUnder32KB(payload)` before it is saved. The SHA-256 checksum is not a digital signature: someone with permission to edit the issue property could change the certificate and recompute it.
+The certificate passes through `assertZeroRawSecretsInAuditPayload(payload)` and `assertPropertyPayloadUnder32KB(payload)` before it is saved, and the policy through `assertPropertyPayloadUnder32KB(payload)`. A redaction that finds nothing writes no certificate. The SHA-256 checksum is not a digital signature: someone with permission to edit the issue property could change the certificate and recompute it.
 
 ---
 
@@ -48,9 +48,11 @@ The full privacy policy is [PRIVACY_POLICY.md](./PRIVACY_POLICY.md).
 
 ## 4. Forge scopes
 
-- `read:jira-work`: Read the issue's summary, description, labels, status and comments, the project property `safeRedactPolicy`, the issue property `safeRedactAudit`, and the project's 25 newest issues.
-- `write:jira-work`: Scrub exposed secrets/PII in place inside issue summaries, descriptions and comments, apply the `sanitized-for-ai` label, and write the issue property `safeRedactAudit`. The issue panel's sample button also uses it to replace the issue description with synthetic test data.
-- `read:app-data:jira` / `write:app-data:jira`: Declared but not used by this version.
+- `read:jira-work`: Read the issue's summary, description, labels, status and all its comments, the project property `safeRedactPolicy`, the issue property `safeRedactAudit`, and the project's 25 newest issues.
+- `write:jira-work`: Scrub exposed secrets/PII in place inside issue summaries, descriptions and comments, apply the `sanitized-for-ai` label when the project's policy says to, and write the issue property `safeRedactAudit`.
+- `manage:jira-project`: Write the project property `safeRedactPolicy` when a project admin saves the redaction policy. Jira requires this scope to set a project property, and still requires the user to have the Administer Projects permission. Not used for anything else.
+
+Version 4.0.0 added `manage:jira-project` and removed `read:app-data:jira` and `write:app-data:jira`, which earlier versions declared but never used.
 
 ---
 

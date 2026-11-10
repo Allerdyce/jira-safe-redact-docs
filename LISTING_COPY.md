@@ -19,10 +19,10 @@ Prevent accidentally pasted API keys, cloud credentials, Social Security Numbers
 
 2. **Zero-Leak SHA-256 Sanitization Certificate & Rovo AI Safe Labeling (`safeRedactAudit`)**
    - Never stores raw unredacted PII or secrets inside Jira Entity Properties or logs.
-   - Records only the pattern type (`AWS_KEY`, `BEARER_TOKEN`, `SSN`, `CREDIT_CARD`, `EMAIL_PII`), match count, field path, and deterministic Web Crypto SHA-256 certificate (`accountId|issueKey|redactedCount|patternTypes|timestamp`) in Issue Property `safeRedactAudit` (`<32 KB`) while applying the `sanitized-for-ai` label.
+   - Records only the pattern type (`AWS_KEY`, `BEARER_TOKEN`, `SSN`, `CREDIT_CARD`, `EMAIL_PII`), match count, field path, and deterministic Web Crypto SHA-256 certificate (`accountId|issueKey|redactedCount|patternTypes|timestamp`) in Issue Property `safeRedactAudit` (`<32 KB`), and applies the `sanitized-for-ai` label when the project's policy says to.
 
 3. **Space Policy Packs & JQL Batch Radar with 1-Click CSV Export (`jira-safe-redact-admin`)**
-   - Space admins toggle compliance policy packs (*Cloud Secrets & API Keys*, *HIPAA*, *PCI-DSS*, *GDPR PII*) in `safeRedactPolicy` (`<32 KB`), run space-wide JQL batch scans, and export an RFC-4180 compliance CSV in 1 click.
+   - Project admins (Administer Projects permission) toggle compliance policy packs (*Cloud Secrets & API Keys*, *HIPAA*, *PCI-DSS*, *GDPR PII*) in `safeRedactPolicy` (`<32 KB`), run space-wide JQL batch scans, and export an RFC-4180 compliance CSV in 1 click.
 
 ---
 
@@ -32,7 +32,7 @@ Prevent accidentally pasted API keys, cloud credentials, Social Security Numbers
 Recursively traverse Jira Atlassian Document Format (ADF) descriptions, summaries, and comments to preview masked matches (`sk_live_...9f2a -> [REDACTED_API_KEY]`) and scrub exposed secrets and PII in-place without breaking rich-text formatting.
 
 ### Highlight 2: Zero-Leak Web Crypto SHA-256 Certificate & Rovo AI Safe Label
-Record a SHA-256 sanitization certificate (`accountId|issueKey|redactedCount|patternTypes|timestamp`) in Jira Issue Property `safeRedactAudit` (`<32 KB`, zero raw PII stored) and automatically apply the `sanitized-for-ai` label.
+Record a SHA-256 sanitization certificate (`accountId|issueKey|redactedCount|patternTypes|timestamp`) in Jira Issue Property `safeRedactAudit` (`<32 KB`, zero raw PII stored) and apply the `sanitized-for-ai` label when the project's policy says to.
 
 ### Highlight 3: Space Policy Packs (HIPAA, PCI-DSS, Cloud Secrets, GDPR) & CSV Export
 Configure space-level detection packs in `safeRedactPolicy`, execute space-wide JQL batch scans in `jira:projectPage`, and export your compliance audit ledger to RFC-4180 CSV in 1 click.

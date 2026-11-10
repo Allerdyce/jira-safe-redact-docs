@@ -1,6 +1,6 @@
 # Privacy policy: PII, Secret & AI Redaction Guard for Jira
 
-Updated 9 November 2026
+Updated 10 November 2026
 
 This policy describes the Atlassian Marketplace app **PII, Secret & AI Redaction Guard for Jira** ("the app"), made by EvidencePair LLC ("EvidencePair", "we"). EvidencePair's company privacy policy, which covers our website and email you send us, is at <https://evidencepair.com/privacy/>.
 
@@ -8,40 +8,42 @@ This policy describes the Atlassian Marketplace app **PII, Secret & AI Redaction
 
 - The app runs on Atlassian Forge, inside your Jira site. It declares no external egress and no remote services, and it makes requests only to your site's Jira APIs. Every request is made as the signed-in user.
 - It looks for personal data and secrets in an issue's summary, description and comments. When a user asks, it replaces what it finds with placeholders in the issue itself. It keeps no copy of the original values.
-- It keeps its own data in Jira, as one issue property on each issue where someone ran a redaction. That data is never sent to EvidencePair.
+- It keeps its own data in Jira: one issue property on each issue where a redaction changed something, and one project property for each project whose admin saved a redaction policy. That data is never sent to EvidencePair.
 - The only personal data the app stores itself is the Atlassian account ID of the person who ran a redaction.
 
 ## What the app stores
 
-**One issue property, `safeRedactAudit`, per issue where someone ran a redaction (the redaction certificate):**
+**One issue property, `safeRedactAudit`, per issue where a redaction changed something (the redaction certificate):**
 
 - the issue key and the project ID;
 - the Atlassian account ID of the person who ran the redaction, and when;
 - how many matches it found, which kinds (for example `SSN` or `EMAIL_PII`), how many of each, and the fields they were in, such as `summary`, a position in the description, or a comment's ID;
-- the label it applied;
+- the label it made sure the issue carries, or none if the project's policy has labelling switched off;
 - a SHA-256 checksum of the account ID, issue key, total count, kinds and time, which lets the app tell whether those values have changed since. The checksum adds no information of its own.
 
-The certificate never holds the values the app found. Before saving it, the app checks it for anything that looks like one of the kinds of data it finds, and stops without saving if it sees one. Each run replaces the issue's previous certificate. A run that finds nothing still writes a certificate: it repeats the previous certificate's counts, or, on a first run, records zero matches.
+The certificate never holds the values the app found. Before saving it, the app checks it for anything that looks like one of the kinds of data it finds, and stops without saving if it sees one. A run that redacts something replaces the issue's previous certificate, and records only what that run redacted. A run that finds nothing changes nothing and writes no certificate, so any earlier certificate stays as it was.
 
 **Changes to the issue itself, when a user runs a redaction:**
 
 - each match in the summary, description and comments is replaced with a placeholder such as `[REDACTED_SSN]`, and the rest of the text and its formatting stay as they were;
-- the label `sanitized-for-ai`, or the label the policy names, is added to the issue.
+- if the project's policy says to (it does unless a project admin switches it off), the label `sanitized-for-ai` is added to the issue. A label already on the issue is never removed.
 
-The app makes these changes as the user who runs it, so Jira's permissions decide what that person can change. The app does not check Jira's reply to each change. If Jira refuses one, for example an edit to a comment that person may not edit, the app still writes the certificate.
+The app makes these changes as the user who runs it, so Jira's permissions decide what that person can change. The app checks Jira's reply to each change. If Jira refuses one, for example an edit to a comment that person may not edit, the app stops there and writes no certificate, and the issue panel says which change was refused and which were already saved.
 
-**The sample button.** The issue panel has a button for trying the app. It replaces the issue's current description with a synthetic example: a made-up email address, API key, AWS key, Social Security number and card number. It works on any issue the user can edit, and the app keeps no copy of the description it replaces.
+**One project property, `safeRedactPolicy`, per project whose admin saved a redaction policy.** It holds settings only: the project key and ID, the kinds of data to find, which fields to scan, the label and whether to add it, when it was last saved, and its size. It holds no personal data and does not record who saved it.
+
+The app changes an issue only when someone runs a redaction on it.
 
 The app does not look up names, email addresses or profiles. Issue text can contain personal data, and the app reads it as entered.
 
 ## What the app reads from Jira
 
-- On the issue panel: the issue's summary, description, labels and status, its comments, the project's redaction policy and the issue's certificate.
+- On the issue panel: the issue's summary, description, labels and status, all its comments (Jira returns them in pages of 100, and the app reads every page), the project's redaction policy and the issue's certificate.
 - On the project page: the policy, and the 25 most recently created issues in the project (key, summary, description, labels and status) with each one's certificate. It scans their summaries and descriptions. It does not read their comments.
 
-It reads no attachments, custom fields or work logs.
+It reads no attachments, custom fields or work logs. If Jira refuses any of these reads, the app shows the error and does not scan or change the issue. It never treats a refused read as "no comments" or "no certificate".
 
-The policy is a project property, `safeRedactPolicy`. It holds settings only: the project key and ID, the kinds of data to find, which fields to scan, the label, and when it was last updated. The project page has a button to save a policy there. In this version the save does not work: the app raises an error before it sends anything to Jira, so the app does not write this property. The app reads the property if one exists. Otherwise it uses its defaults: all five kinds of data, in summaries, descriptions and comments.
+The policy is the project property `safeRedactPolicy` described above. A project admin saves it from the project page: they choose which kinds of data to find and whether to add the label. Saving needs the Administer Projects permission. If Jira refuses the save, the page shows Jira's reason and nothing changes. Until a policy is saved, the app uses its defaults: all five kinds of data, in summaries, descriptions and comments, with the label added.
 
 It looks for five kinds of data: AWS access key IDs; API keys and bearer tokens (`sk_live_`, `sk_test_`, `ghp_`, `xox` tokens and `Bearer` values); US Social Security numbers; payment card numbers; and email addresses. It finds them by their format alone. It can therefore miss data written another way, and replace numbers or text that only look like one of these.
 
@@ -59,9 +61,11 @@ The project page shows a table and a CSV of the recent issues to anyone who open
 
 Jira's permissions also decide who can change a certificate: changing an issue property needs permission to edit the issue.
 
+Anyone who can browse the project can read its policy. Changing it needs the Administer Projects permission.
+
 ## Retention and deletion
 
-The app keeps each certificate until someone deletes it or a later redaction on that issue replaces it. It has no retention setting, runs no scheduled jobs, and has no uninstall step. Deleting an issue deletes its properties. A Jira administrator can delete a certificate at any time through Jira's REST API, and should do so before uninstalling if the data must go.
+The app keeps each certificate until someone deletes it or a later redaction on that issue replaces it, and keeps a project's policy until a project admin saves a new one or someone deletes it. It has no retention setting, runs no scheduled jobs, and has no uninstall step. Deleting an issue or a project deletes its properties. A Jira administrator can delete a certificate or a policy at any time through Jira's REST API, and should do so before uninstalling if the data must go.
 
 A redaction changes only the current summary, description and comments. The app keeps no copy of the original values and cannot restore them. It does not edit the issue's history, and Jira's history of the issue can still show earlier values of the summary and description.
 
